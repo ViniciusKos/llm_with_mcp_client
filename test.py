@@ -13,11 +13,11 @@ async def main():
 
     client = MultiServerMCPClient(
         {
-            "weather": {
-                "transport": "http",  # HTTP-based remote server
-                # Ensure you start your weather server on port 8000
-                "url": "http://localhost:8000/mcp",
-            },
+            # "weather": {
+            #     "transport": "http",  # HTTP-based remote server
+            #     # Ensure you start your weather server on port 8000
+            #     "url": "http://localhost:8000/mcp",
+            # },
             "github": {
                 "transport": "http",
                 "url": "https://api.githubcopilot.com/mcp/",
@@ -34,10 +34,11 @@ async def main():
         tools  
     )
 
-    weather_response = await agent.ainvoke(
-        {"messages": [{"role": "user", "content": "create a new github repo called fufu"}]}
-    )
-    print(weather_response["messages"][-1].content)
+    # weather_response = await agent.ainvoke(
+    #     {"messages": [{"role": "user", "content": "How many repos are there in my github account?"}]}
+    # )
+    # print(weather_response["messages"][-1].content)
+    return agent
 
 if __name__ == "__main__":
     asyncio.run(main())
