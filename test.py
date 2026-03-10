@@ -33,7 +33,6 @@ async def main():
         "openai:gpt-5.2",
         tools  
     )
-
     # weather_response = await agent.ainvoke(
     #     {"messages": [{"role": "user", "content": "How many repos are there in my github account?"}]}
     # )
