@@ -1,5 +1,5 @@
 import gradio as gr
-from langchain.messages import AIMessage, HumanMessage
+from langchain.messages import AIMessage, AIMessageChunk, HumanMessage
 from agent import main
 
 agent = None
@@ -29,14 +29,25 @@ async def predict(message, history):
 
         history_langchain_format.append(HumanMessage(content=message))
 
-        gpt_response = await ag.ainvoke(
-            {"messages": history_langchain_format}
-        )
-
-        return gpt_response["messages"][-1].content
+        response = ""
+        async for mode, data in ag.astream(
+            {"messages": history_langchain_format},
+            stream_mode=["messages", "debug", "updates"],
+        ):
+            if mode == "updates":
+                for step, step_data in data.items():
+                    if step == "tools":
+                        for tool_msg in step_data["messages"]:
+                            response += f"\n> Calling the tool: 🔧 **{tool_msg.name}**: \n\n"
+                        yield response
+            elif mode == "messages":
+                token, metadata = data
+                if isinstance(token, AIMessageChunk) and token.text:
+                    response += token.text
+                    yield response
 
     except Exception as e:
-        return f"An error occurred while processing your request: {e}"
+        yield f"An error occurred while processing your request: {e}"
 
 
 demo = gr.ChatInterface(
