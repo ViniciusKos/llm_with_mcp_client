@@ -1,8 +1,9 @@
 import asyncio
 import os
 from langchain_mcp_adapters.client import MultiServerMCPClient
-from langchain.agents import create_agent
 from dotenv import load_dotenv
+from deepagents import create_deep_agent
+
 
 load_dotenv()  # Load environment variables from .env file
 
@@ -42,7 +43,7 @@ async def main():
     
 
     tools = await client.get_tools()
-    agent = create_agent(
+    agent = create_deep_agent(
         model="openai:gpt-5.2",
         tools=tools,
         system_prompt=system_prompt
